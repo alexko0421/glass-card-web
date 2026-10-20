@@ -51,6 +51,21 @@ import "glass-card/style.css";
 
 `GlassCard` 渲染一个 `div`，其他 props 原样传下去。`swatch` 可以是预设名，也可以是 `{ tint, ink, opacity }`。
 
+## 和 SwiftUI 版的区别
+
+| | SwiftUI（[glass-card](https://github.com/alexko0421/glass-card)） | 网页版（本仓库） |
+| --- | --- | --- |
+| 模糊的是什么 | 你传入的背景视图，在卡片后面重画一次 | 卡片后面的真实页面，用 `backdrop-filter` |
+| 卡片叠在一起 | 演示把下层卡片扁平重画（白底加颜色），是近似的多层玻璃 | 每张卡都会模糊下面卡片的完整材质 |
+| API | `GlassCard`，另有 `GlassCardMaterial` 自定义背景和遮罩 | `.glass-card` class 和 `<GlassCard>`，不用传背景或遮罩 |
+| 什么时候会失效 | 背景视图要可以重复绘制、没有副作用 | 祖先元素有 `filter`、`opacity` 小于 1、`mask` 等，卡片就看不到页面，见下文 |
+| 阴影数值 | `.shadow(radius: r)` | 要看起来一样，用 `blur = 2 × r`，透明度 × 1.4 |
+| 运行环境 | macOS 14 及以上 | 支持 `backdrop-filter` 和 `color-mix()` 的浏览器，目前只在 Chrome 测过 |
+| 演示 | 单卡材质，加上可以展开、选择、拖动的 Layered 和 Ring | 单卡材质（可换颜色、调模糊），加一个静态的 Layered；没有 Ring，叠卡不能展开、选择或拖动 |
+| 测试 | 四个渲染和数值测试 | 只有类型检查 |
+
+材质本身一致：颜色、饱和度、模糊和白边都相同。和 SwiftUI 在同一尺寸下的渲染对比，卡片内的像素大约只差 3/255。
+
 ## 阴影
 
 卡片本身没有阴影，和 SwiftUI 版一样，自己加 `box-shadow`。要对上 SwiftUI 的 `.shadow(color: .black.opacity(a), radius: r, y: y)`，用 `0 y (2 × r) rgb(0 0 0 / (1.4 × a))`。这个换算是量两边渲染结果得出来的，不是文档写的。demo 用的是 `0 10px 40px rgb(0 0 0 / 0.14)`。

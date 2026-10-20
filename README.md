@@ -51,6 +51,21 @@ import "glass-card/style.css";
 
 `GlassCard` renders a `div` and passes other props through. `swatch` takes a preset name or `{ tint, ink, opacity }`.
 
+## How it differs from the SwiftUI version
+
+| | SwiftUI ([glass-card](https://github.com/alexko0421/glass-card)) | Web (this repo) |
+| --- | --- | --- |
+| What gets blurred | A backdrop view you pass in, redrawn behind the card | The real page behind the card, via `backdrop-filter` |
+| Overlapping cards | The demo redraws lower cards flat (white plus tint), so it approximates layered glass | Each card blurs the full material of the cards below it |
+| API | `GlassCard`, plus `GlassCardMaterial` for a custom backdrop and mask | `.glass-card` class and `<GlassCard>`. No backdrop or mask to pass |
+| When the blur fails | Backdrop views must be repeatable and free of side effects | An ancestor with `filter`, `opacity` below 1, `mask` and so on cuts the card off from the page. See below |
+| Shadow numbers | `.shadow(radius: r)` | Use `blur = 2 × r` and opacity × 1.4 to look the same |
+| Runs on | macOS 14+ | Browsers with `backdrop-filter` and `color-mix()`. Checked in Chrome only so far |
+| Demo | Material, plus Layered and Ring stacks you can expand, select and drag | Material with color and blur controls, plus a static Layered stack. No Ring; the stack can't be expanded, selected or dragged |
+| Tests | Four rendering and value tests | Type checking only |
+
+The material itself matches: same colors, saturation, blur and rim. Measured against the SwiftUI render at the same size, pixels inside the card differ by about 3 out of 255.
+
 ## Shadows
 
 The card has no shadow, like the SwiftUI version. Add a normal `box-shadow`. To match a SwiftUI `.shadow(color: .black.opacity(a), radius: r, y: y)`, use `0 y (2 × r) rgb(0 0 0 / (1.4 × a))`. That conversion comes from measuring both renders, not from documentation. The demo uses `0 10px 40px rgb(0 0 0 / 0.14)`.
