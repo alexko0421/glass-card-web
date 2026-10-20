@@ -1,0 +1,500 @@
+/* ── tokens ─────────────────────────────────────────────── */
+
+:root {
+  --page: #f6f6f5;
+  --canvas: #e9e9e7;
+  --canvas-light: rgb(255 255 255 / 0.75);
+  --canvas-shade: rgb(0 0 0 / 0.045);
+  --text: #171717;
+  --muted: #7a7a76;
+  --control: rgb(0 0 0 / 0.05);
+  --control-hover: rgb(0 0 0 / 0.08);
+  --control-fill: rgb(0 0 0 / 0.09);
+  --accent: #171717;
+  --on-accent: #ffffff;
+
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 30px -10px rgb(0 0 0 / 0.14);
+
+  --radius-stage: 32px;
+  --radius-control: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 40px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0f0f11;
+    --canvas: #19191c;
+    --canvas-light: rgb(255 255 255 / 0.05);
+    --canvas-shade: rgb(0 0 0 / 0.25);
+    --text: #ededec;
+    --muted: #8d8d93;
+    --control: rgb(255 255 255 / 0.06);
+    --control-hover: rgb(255 255 255 / 0.1);
+    --control-fill: rgb(255 255 255 / 0.12);
+    --accent: #ededec;
+    --on-accent: #111113;
+    --glass: rgb(40 40 44 / 0.55);
+    --glass-edge: rgb(255 255 255 / 0.08);
+    --glass-shadow: 0 0 0 1px rgb(255 255 255 / 0.06);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --page: #0f0f11;
+  --canvas: #19191c;
+  --canvas-light: rgb(255 255 255 / 0.05);
+  --canvas-shade: rgb(0 0 0 / 0.25);
+  --text: #ededec;
+  --muted: #8d8d93;
+  --control: rgb(255 255 255 / 0.06);
+  --control-hover: rgb(255 255 255 / 0.1);
+  --control-fill: rgb(255 255 255 / 0.12);
+  --accent: #ededec;
+  --on-accent: #111113;
+  --glass: rgb(40 40 44 / 0.55);
+  --glass-edge: rgb(255 255 255 / 0.08);
+  --glass-shadow: 0 0 0 1px rgb(255 255 255 / 0.06);
+  color-scheme: dark;
+}
+
+/* ── base ───────────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font: 15px/1.5 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-4) max(var(--space-6), env(safe-area-inset-bottom));
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+p {
+  margin: var(--space-1) 0 0;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+code {
+  font: 13px ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--control-fill);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+.slider:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── layout ─────────────────────────────────────────────── */
+
+.page,
+.vanilla,
+.foot {
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.page {
+  margin-top: var(--space-6);
+}
+
+.intro {
+  padding-inline: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.stage {
+  position: relative;
+  min-height: 600px;
+  border-radius: var(--radius-stage);
+  /* Grid paper, matching GlassPaper in the SwiftUI package. Light in both themes: it is the artwork. */
+  background-color: #fbfbfb;
+  background-image:
+    linear-gradient(#ededed 1px, transparent 1px),
+    linear-gradient(90deg, #ededed 1px, transparent 1px);
+  background-size: 180px 180px;
+  background-position: center;
+  /* The paper stays light, so the controls on it use the light tokens. */
+  --text: #171717;
+  --muted: #7a7a76;
+  --control: rgb(0 0 0 / 0.05);
+  --control-hover: rgb(0 0 0 / 0.08);
+  --control-fill: rgb(0 0 0 / 0.09);
+  --accent: #171717;
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 30px -10px rgb(0 0 0 / 0.14);
+  color: var(--text);
+  color-scheme: light;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.stage--small {
+  min-height: 300px;
+  grid-template-rows: 1fr;
+  place-items: center;
+}
+
+.stage-center {
+  display: grid;
+  place-items: center;
+}
+
+/* Scene and card share one cell so the card sits over the scene. */
+.stage-center > * {
+  grid-area: 1 / 1;
+}
+
+.vanilla {
+  margin-top: var(--space-8);
+}
+
+.foot {
+  margin-top: var(--space-8);
+  padding-inline: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ── glass chrome ───────────────────────────────────────── */
+
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow: inset 0 0 0 1px var(--glass-edge), var(--glass-shadow);
+}
+
+.chrome {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chrome--bottom {
+  justify-self: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 26px; /* 6px padding + 20px half of a 40px control */
+}
+
+.slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 148px;
+  height: 40px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--control-fill) var(--pct), var(--control) var(--pct));
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  transition: scale var(--dur-fast) var(--ease-out);
+}
+
+.slider-label,
+.slider-value {
+  position: relative;
+  pointer-events: none;
+}
+
+.slider-value {
+  color: var(--muted);
+}
+
+.slider input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.swatches {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 var(--space-2);
+}
+
+.swatches button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+  transition: scale var(--dur-fast) var(--ease-out);
+}
+
+.swatches button[aria-checked="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .swatches button:hover {
+    scale: 1.12;
+  }
+  .slider:hover {
+    background: linear-gradient(90deg, var(--control-fill) var(--pct), var(--control-hover) var(--pct));
+  }
+}
+
+.swatches button:active {
+  scale: 0.92;
+}
+
+.slider:active {
+  scale: 0.98;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slider,
+  .swatches button {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .stage {
+    min-height: 560px;
+  }
+  .slider {
+    width: 100%;
+  }
+  .chrome--bottom {
+    justify-self: stretch;
+  }
+}
+
+
+/* ── scene ──────────────────────────────────────────────── */
+
+.scene {
+  position: relative;
+  width: 300px;
+  height: 160px;
+}
+
+.scene > * {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.layer {
+  width: 280px;
+  height: 152px;
+  border-radius: 20px;
+}
+
+.layer--blue {
+  background: rgb(55 105 245 / 0.58);
+  transform: translate(calc(-50% - 98px), calc(-50% - 18px)) rotate(-13deg);
+}
+
+.layer--rose {
+  background: rgb(238 85 109 / 0.58);
+  transform: translate(calc(-50% + 106px), calc(-50% + 12px)) rotate(12deg);
+}
+
+.underneath {
+  transform: translate(calc(-50% - 85px), calc(-50% - 54px));
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 500;
+  color: #18428e;
+}
+
+.scene--small .layer {
+  width: 220px;
+  height: 116px;
+}
+
+.layer--violet {
+  background: rgb(155 56 236 / 0.58);
+  transform: translate(calc(-50% - 80px), calc(-50% - 10px)) rotate(-9deg);
+}
+
+.layer--lemon {
+  background: rgb(242 247 102 / 0.8);
+  transform: translate(calc(-50% + 84px), calc(-50% + 14px)) rotate(10deg);
+}
+
+/* ── card content ───────────────────────────────────────── */
+
+.demo-card {
+  width: 300px;
+  height: 160px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  /* SwiftUI .shadow(color: .black.opacity(0.10), radius: 20, y: 10).
+     Measured against its render: CSS blur = 2 × radius, opacity × 1.4. */
+  box-shadow: 0 10px 40px rgb(0 0 0 / 0.14);
+}
+
+.demo-card--compact {
+  width: 260px;
+  height: 120px;
+  padding: 18px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: auto;
+}
+
+.dots {
+  display: flex;
+  gap: 2.5px;
+  padding-top: 4px;
+}
+
+.dots i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.card-title {
+  margin-top: 3px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.demo-card--compact .card-subtitle {
+  margin-top: auto;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.demo-card--compact .card-title {
+  font-size: 15px;
+}
+
+/* ── pile ───────────────────────────────────────────────── */
+
+.intro--section {
+  margin-top: var(--space-8);
+}
+
+.stage--pile {
+  min-height: 520px;
+  grid-template-rows: 1fr;
+  place-items: center;
+}
+
+.pile {
+  display: grid;
+  place-items: center;
+}
+
+.pile-card {
+  grid-area: 1 / 1;
+  width: 240px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  /* SwiftUI .shadow(0.035, radius: 12, y: 8) + .shadow(0.045, radius: 3, y: 2), converted as above. */
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.05), 0 2px 6px rgb(0 0 0 / 0.063);
+}
+
+.pile-card::after {
+  border-width: 1.5px;
+  border-color: rgb(255 255 255 / 0.65);
+}
+
+.pile-card .card-subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.pile-card .card-title {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 760px) {
+  .pile {
+    scale: 0.5;
+  }
+  .stage--pile {
+    min-height: 300px;
+  }
+}

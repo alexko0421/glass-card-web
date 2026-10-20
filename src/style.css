@@ -1,0 +1,47 @@
+/*
+ * Glass Card
+ *
+ * backdrop-filter samples whatever is painted behind the card, so there is
+ * no backdrop to supply. It stops working if an ancestor has filter,
+ * opacity < 1, mask, clip-path, mix-blend-mode or its own backdrop-filter:
+ * that ancestor becomes the backdrop root and hides everything outside it.
+ */
+
+.glass-card {
+  --glass-tint: #3769f5;
+  --glass-ink: #18428e;
+  --glass-opacity: 0.58;
+  --glass-blur: 7px;
+  --glass-radius: 20px;
+
+  position: relative;
+  box-sizing: border-box;
+  padding: 16px;
+  border-radius: var(--glass-radius);
+  overflow: hidden;
+  color: var(--glass-ink);
+  /* Saturate and blur what is behind, then lay the tint over it. */
+  -webkit-backdrop-filter: saturate(1.3) blur(var(--glass-blur));
+  backdrop-filter: saturate(1.3) blur(var(--glass-blur));
+  background: color-mix(in srgb, var(--glass-tint) calc(var(--glass-opacity) * 100%), transparent);
+}
+
+/* The rim sits above the content, like the SwiftUI overlay. */
+.glass-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgb(255 255 255 / 0.6);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.glass-card[data-swatch="blue"] { --glass-tint: #3769f5; --glass-ink: #18428e; }
+.glass-card[data-swatch="rose"] { --glass-tint: #ee556d; --glass-ink: #881d2d; }
+.glass-card[data-swatch="violet"] { --glass-tint: #9b38ec; --glass-ink: #4a1478; }
+.glass-card[data-swatch="mint"] { --glass-tint: #68bd81; --glass-ink: #1f5e33; }
+.glass-card[data-swatch="lemon"] { --glass-tint: #f2f766; --glass-ink: #5a5e12; }
+.glass-card[data-swatch="orange"] { --glass-tint: #f5963c; --glass-ink: #7a3e0a; }
+.glass-card[data-swatch="teal"] { --glass-tint: #2ec2c4; --glass-ink: #0b5557; }
+.glass-card[data-swatch="graphite"] { --glass-tint: #3a3f4a; --glass-ink: #15181e; }
+.glass-card[data-swatch="pearl"] { --glass-tint: #ffffff; --glass-ink: #484848; --glass-opacity: 0.45; }
